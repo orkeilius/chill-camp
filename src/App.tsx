@@ -1,19 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import {audioService, AudioTrack} from "./audioService";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+  const [track, _] = useState(audioService.getTrack("main"));
+
+  useEffect(() => {
+    track.addEndCallback(audioLogic);
+    audioLogic(track);
+
+    return () => {track?.stop()}
+  }, [track]);
+
+  async function audioLogic(track: AudioTrack) {
+    console.log("Audio track ended:", track);
+    const nextTrack = Math.random() < 0.5 ? "/test1.mp3" : "/test2.mp3";
+      track.play(nextTrack);
+  }
+
+  function toggleAudio() {
+      audioLogic(track)
   }
 
   return (
     <main className="container">
+      <button onClick={toggleAudio}>
+        {isPlaying ? "Stop Audio" : "Play Audio"}
+      </button>
+
       <h1>Welcome to Tauri + React</h1>
 
       <div className="row">
@@ -29,21 +47,6 @@ function App() {
       </div>
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
     </main>
   );
 }
