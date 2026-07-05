@@ -9,6 +9,7 @@ export class AudioService {
     }
 
 }
+
 export const audioService = new AudioService();
 
 // facade to audio feature
@@ -16,6 +17,8 @@ export const audioService = new AudioService();
 export class AudioTrack {
 
     private readonly audioPlayer: HTMLAudioElement;
+
+    private readonly listener: Map<string, (() => void)> = new Map();
 
 
     constructor() {
@@ -32,9 +35,27 @@ export class AudioTrack {
         this.audioPlayer.currentTime = 0;
     }
 
-    public addEndCallback(callback: ((track: AudioTrack)=> void)) {
-        this.audioPlayer.addEventListener('ended', () => callback(this));
+    public addEndCallback(key: string, callback: ((track: AudioTrack) => void)): string {
+        if (this.listener.has(key)) {
+            console.warn(`Listener with key ${key} already exists.`);
+            this.removeEndCallback(key);
+        }
+        let listener = () => callback(this);
+        this.listener.set(key, listener);
+        this.audioPlayer.addEventListener('ended', listener);
+        return key;
     }
+
+    public removeEndCallback(key: string) {
+        const listener = this.listener.get(key);
+        if (!listener) {
+            console.warn(`No listener found for id: ${key}`);
+            return;
+        }
+        this.audioPlayer.removeEventListener('ended', listener);
+        this.listener.delete(key);
+    }
+
 
     public setVolume(volume: number) {
         this.audioPlayer.volume = volume;

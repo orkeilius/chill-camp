@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AudioTrack, AudioService, audioService } from "./audioService";
+import { AudioTrack, AudioService, audioService } from "../../src/services/audioService";
 
 describe("AudioTrack", () => {
   let track: AudioTrack;
@@ -51,9 +51,10 @@ describe("AudioTrack", () => {
   });
 
   describe("addEndCallback", () => {
-    it("should register an ended event listener", () => {
+    it("should register an ended event listener with the given key", () => {
       const callback = vi.fn();
-      track.addEndCallback(callback);
+      const key = track.addEndCallback("my-key", callback);
+      expect(key).toBe("my-key");
       expect(audioElement.addEventListener).toHaveBeenCalledTimes(1);
       expect(audioElement.addEventListener).toHaveBeenCalledWith(
         "ended",
@@ -63,9 +64,8 @@ describe("AudioTrack", () => {
 
     it("should invoke the callback with the track when ended fires", () => {
       const callback = vi.fn();
-      track.addEndCallback(callback);
+      track.addEndCallback("my-key", callback);
 
-      // Retrieve the handler that was registered and call it manually
       const handler = vi.mocked(audioElement.addEventListener).mock.calls[0][1] as EventListener;
       handler(new Event("ended"));
 
@@ -73,11 +73,11 @@ describe("AudioTrack", () => {
       expect(callback).toHaveBeenCalledWith(track);
     });
 
-    it("should support multiple callbacks", () => {
+    it("should support multiple callbacks with distinct keys", () => {
       const callback1 = vi.fn();
       const callback2 = vi.fn();
-      track.addEndCallback(callback1);
-      track.addEndCallback(callback2);
+      track.addEndCallback("key-1", callback1);
+      track.addEndCallback("key-2", callback2);
 
       const handler1 = vi.mocked(audioElement.addEventListener).mock.calls[0][1] as EventListener;
       const handler2 = vi.mocked(audioElement.addEventListener).mock.calls[1][1] as EventListener;
@@ -88,6 +88,52 @@ describe("AudioTrack", () => {
 
       handler2(new Event("ended"));
       expect(callback2).toHaveBeenCalledTimes(1);
+    });
+
+    it("should overwrite an existing callback if the same key is used", () => {
+      const previousCallback = vi.fn();
+      const newCallback = vi.fn();
+
+      track.addEndCallback("key", previousCallback);
+      const handler1 = vi.mocked(audioElement.addEventListener).mock.calls[0][1] as EventListener;
+      handler1(new Event("ended"));
+      expect(previousCallback).toHaveBeenCalledTimes(1);
+      expect(newCallback).not.toHaveBeenCalled();
+
+      track.addEndCallback("key", newCallback);
+      const handler2 = vi.mocked(audioElement.addEventListener).mock.calls[1][1] as EventListener;
+      handler2(new Event("ended"));
+      expect(previousCallback).toHaveBeenCalledTimes(1);
+      expect(newCallback).toHaveBeenCalledTimes(1);
+
+
+    })
+  });
+
+  describe("removeEndCallback", () => {
+    it("should handle adding and removing multiple callbacks in different order (abc → bac)", () => {
+      vi.spyOn(audioElement, "removeEventListener");
+
+      const cbA = vi.fn();
+      const cbB = vi.fn();
+      const cbC = vi.fn();
+
+      track.addEndCallback("a", cbA);
+      track.addEndCallback("b", cbB);
+      track.addEndCallback("c", cbC);
+
+      // Remove in order: b, a, c
+      track.removeEndCallback("b");
+      track.removeEndCallback("a");
+      track.removeEndCallback("c");
+
+      expect(audioElement.removeEventListener).toHaveBeenCalledTimes(3);
+
+      // Re-removing warns because the map entry was cleaned up
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      track.removeEndCallback("b");
+      expect(warn).toHaveBeenCalledWith("No listener found for id: b");
+      warn.mockRestore();
     });
   });
 
@@ -144,7 +190,7 @@ describe("AudioService", () => {
 
   it("should export a singleton instance", async () => {
     expect(audioService).toBeInstanceOf(AudioService);
-    const { audioService: importedAgain } = await import("./audioService");
+    const { audioService: importedAgain } = await import("../../src/services/audioService");
     expect(audioService).toBe(importedAgain);
   });
 });
