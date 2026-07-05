@@ -1,39 +1,22 @@
 import {useEffect} from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
-import {audioService, AudioTrack} from "./audioService";
+import MainTrackService from "./services/mainTrackService.ts";
 
-
-const mainTack = audioService.getTrack("main");
-
-async function audioLogic(track: AudioTrack) {
-    console.log("Audio track ended:", track);
-    const nextTrack = Math.random() < 0.5 ? "/test1.mp3" : "/test2.mp3";
-    track.play(nextTrack);
-}
 
 
 function App() {
 
     useEffect(() => {
-        mainTack.addEndCallback(audioLogic);
-        audioLogic(mainTack);
-
+        MainTrackService.start()
         return () => {
-            mainTack?.stop()
+            MainTrackService?.stop()
         }
-    }, [mainTack]);
+    }, []);
 
-    function toggleAudio() {
-        audioLogic(mainTack)
-    }
 
     return (
         <main className="container">
-            <button onClick={toggleAudio}>
-                {"Play Audio"}
-            </button>
-
             <h1>Welcome to Tauri + React</h1>
 
             <div className="row">
