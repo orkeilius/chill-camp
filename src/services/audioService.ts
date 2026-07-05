@@ -36,6 +36,11 @@ export class AudioTrack {
         this.audioPlayer.addEventListener('ended', () => callback(this));
     }
 
+    public removeEndCallback(callback: ((track: AudioTrack)=> void)) {
+        this.audioPlayer.removeEventListener('ended', () => callback(this));
+    }
+
+
     public setVolume(volume: number) {
         this.audioPlayer.volume = volume;
     }

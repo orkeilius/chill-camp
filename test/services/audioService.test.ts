@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { AudioTrack, AudioService, audioService } from "./audioService";
+import { AudioTrack, AudioService, audioService } from "../../src/services/audioService.ts";
+import mainTrackService from "../../src/services/mainTrackService.ts";
+import modService from "../../src/services/modService.ts";
 
 describe("AudioTrack", () => {
   let track: AudioTrack;
@@ -144,7 +146,7 @@ describe("AudioService", () => {
 
   it("should export a singleton instance", async () => {
     expect(audioService).toBeInstanceOf(AudioService);
-    const { audioService: importedAgain } = await import("./audioService");
+    const { audioService: importedAgain } = await import("../../src/services/audioService.ts");
     expect(audioService).toBe(importedAgain);
   });
 });
