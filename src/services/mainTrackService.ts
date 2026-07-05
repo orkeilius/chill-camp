@@ -1,9 +1,14 @@
 import modService from './modService';
-import { audioService } from './audioService.ts';
+import { audioService } from './audioService';
+import { Playlist } from '../interface/Playlist';
+
+const MainTrackOnEndCallbackId = 'MainTrackOnEndCallback';
 
 class MainTrackService {
     private readonly track = audioService.getTrack('main');
     private currentPlaylist: Playlist | null = null;
+
+    private listenerId: string | null = null;
 
     public start() {
         const playlists = modService.listOfPlaylists;
@@ -15,8 +20,9 @@ class MainTrackService {
         const randomIndex = Math.floor(Math.random() * playlists.length);
         this.currentPlaylist = playlists[randomIndex];
 
-        this.track.addEndCallback(() => this.launchNextMusic());
+        this.listenerId = this.track.addEndCallback(MainTrackOnEndCallbackId, () => this.launchNextMusic());
         this.launchNextMusic()
+            .catch((error) => console.error('Error occurred while launching next music:', error));
     }
 
     public async launchNextMusic() {
@@ -30,10 +36,10 @@ class MainTrackService {
     }
 
     public stop() {
-        if (this.track) {
-            this.track.stop();
+        this.track.stop();
+        if (this.listenerId !== null) {
+            this.track.removeEndCallback(MainTrackOnEndCallbackId);
         }
-        this.track.removeEndCallback(() => this.launchNextMusic());
     }
 }
 

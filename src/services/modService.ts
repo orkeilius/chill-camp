@@ -1,15 +1,17 @@
-import TestMod from "../mod/TestMod/TestMod.ts";
+import TestMod from "../mod/TestMod/TestMod";
+import { Playlist } from "../interface/Playlist";
+import { Mod } from "../interface/Mod";
 
 class ModService {
 
-    public ListOfMods: Mod[] = [
+    public readonly listOfMods: Mod[] = [
         new TestMod(),
     ]
 
-    public listOfPlaylists: Playlist[] = [];
+    public readonly listOfPlaylists: Playlist[] = [];
 
     constructor() {
-        this.ListOfMods.forEach((mod) => {
+        this.listOfMods.forEach((mod) => {
             this.listOfPlaylists.push(...mod.getPlaylists());
         });
     }

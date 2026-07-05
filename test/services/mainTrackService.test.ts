@@ -8,21 +8,21 @@ const mockTrack = vi.hoisted(() => ({
 }));
 
 // Mock dependencies before importing the service under test
-vi.mock("../../src/services/audioService.ts", () => ({
+vi.mock("../../src/services/audioService", () => ({
   audioService: {
     getTrack: vi.fn(() => mockTrack),
   },
 }));
 
-vi.mock("../../src/services/modService.ts", () => ({
+vi.mock("../../src/services/modService", () => ({
   default: {
     listOfPlaylists: [],
   },
 }));
 
 // Now import the service
-import mainTrackService from "../../src/services/mainTrackService.ts";
-import modService from "../../src/services/modService.ts";
+import mainTrackService from "../../src/services/mainTrackService";
+import modService from "../../src/services/modService";
 
 describe("MainTrackService", () => {
   beforeEach(() => {
@@ -78,6 +78,15 @@ describe("MainTrackService", () => {
 
   describe("stop", () => {
     it("should call stop on the track and remove callback", () => {
+      const mockPlaylist = {
+        name: "Test Playlist",
+        getNextMusic: () => new URL("https://example.com/test.mp3")
+      } as any;
+
+      modService.listOfPlaylists = [mockPlaylist];
+      mainTrackService.start(); // sets listenerId
+      vi.clearAllMocks(); // reset call counts from start()
+
       mainTrackService.stop();
 
       expect(mockTrack.stop).toHaveBeenCalled();

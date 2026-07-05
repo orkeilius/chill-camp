@@ -1,3 +1,4 @@
+import { Playlist } from "../../interface/Playlist";
 
 export default class TestPlaylist implements Playlist {
     name = "TestPlaylist";

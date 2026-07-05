@@ -1,4 +1,4 @@
-interface Playlist {
+export interface Playlist {
     name: string;
     getNextMusic: () => URL
 }

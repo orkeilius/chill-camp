@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
-import MainTrackService from "./services/mainTrackService.ts";
+import MainTrackService from "./services/mainTrackService";
 
 
 
@@ -10,7 +10,7 @@ function App() {
     useEffect(() => {
         MainTrackService.start()
         return () => {
-            MainTrackService?.stop()
+            MainTrackService.stop()
         }
     }, []);
 
