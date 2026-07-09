@@ -7,3 +7,6 @@
     grid-auto-rows: 50px;
     place-content: safe center;
 }
+.grid > * {
+    overflow: clip;
+}
