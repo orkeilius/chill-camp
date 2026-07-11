@@ -1,6 +1,5 @@
 import {Playlist} from "../interface/Playlist";
 import NookMod from "../mod/nook-playlist/NookMod.ts";
-import Widget from "../interface/widget";
 import TestMod from "../mod/TestMod/TestMod";
 import Mod from "../interface/Mod";
 import SystemWidgetMod from "../mod/systemWidgetMod/SystemWidgetMod";
@@ -9,6 +8,7 @@ import {Widget} from "../interface/widget";
 class ModService {
 
     public readonly listOfMods: Mod[] = [
+        new SystemWidgetMod(),
         new NookMod(),
         new TestMod(),
     ]

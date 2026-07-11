@@ -1,13 +1,14 @@
 import "../css/MainPage.css";
 import ModService from "../services/modService";
 import {ReactGridLayout, useContainerWidth} from "react-grid-layout";
+import {EditModeProvider, useEditMode} from "../context/EditModeContext";
 
 const CellSize = 50
 
 const widgets = ModService.listOfWidgets
 
-export default function MainPage() {
-
+function PageContent() {
+    const {editMode} = useEditMode()
     const {width: containerWidth, containerRef, mounted} = useContainerWidth();
 
     console.log(Math.floor(containerWidth / CellSize))
@@ -20,7 +21,7 @@ export default function MainPage() {
                     rowHeight: CellSize,
                     margin: [0, 0]
                 }}
-                dragConfig={{enabled: true}}
+                dragConfig={{enabled: editMode}}
             >
                 {widgets.map((widget, i) => (
                     <div key={i} data-grid={{
@@ -36,4 +37,8 @@ export default function MainPage() {
                 ))}
             </ReactGridLayout>}</div>
     )
+}
+
+export default function MainPage() {
+    return <EditModeProvider><PageContent/></EditModeProvider>
 }
