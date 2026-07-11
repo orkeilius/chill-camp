@@ -1,4 +1,7 @@
 import "../css/MainPage.css";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+
 import ModService from "../services/modService";
 import {ReactGridLayout, useContainerWidth} from "react-grid-layout";
 import {EditModeProvider, useEditMode} from "../context/EditModeContext";
@@ -22,6 +25,7 @@ function PageContent() {
                     margin: [0, 0]
                 }}
                 dragConfig={{enabled: editMode}}
+                resizeConfig={{enabled: editMode}}
             >
                 {widgets.map((widget, i) => (
                     <div key={i} data-grid={{
@@ -29,8 +33,8 @@ function PageContent() {
                         minH: widget.minSize.height,
                         maxW: widget.maxSize.width,
                         maxH: widget.maxSize.height,
-                        w: 2,
-                        h: 2
+                        h: widget.minSize.height,
+                        w: widget.minSize.width,
                     }}>
                         <widget.content/>
                     </div>
