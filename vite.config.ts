@@ -32,7 +32,11 @@ export default defineConfig(async () => ({
     test: {
         environment: "jsdom",
         globals: true,
+
         coverage: {
+            reporter : [
+                'lcov',
+            ],
             include: ['src/**/*.{ts,tsx}'],
         },
     },
