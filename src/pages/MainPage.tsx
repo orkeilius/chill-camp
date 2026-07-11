@@ -1,29 +1,39 @@
 import "../css/MainPage.css";
 import ModService from "../services/modService";
-import {WidgetPlacement} from "../Type/widgetPlacement";
+import {ReactGridLayout, useContainerWidth} from "react-grid-layout";
 
-function rand(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const CellSize = 50
 
-const widgets: WidgetPlacement[] = ModService.listOfWidgets.map(w => ({
-    widget: w,
-    position: {x: rand(1, 8), y: rand(1, 8)},
-    size: {width: rand(w.minSize.width, w.maxSize.width), height: rand(w.minSize.height, w.maxSize.height)},
-}));
+const widgets = ModService.listOfWidgets
 
 export default function MainPage() {
-    return (<div className="grid">
-        {widgets.map(({widget, position, size}, index) => (
-            <div
-                key={index}
-                style={{
-                    gridColumn: `${position.x} / span ${size.width}`,
-                    gridRow: `${position.y} / span ${size.height}`,
+
+    const {width: containerWidth, containerRef, mounted} = useContainerWidth();
+
+    console.log(Math.floor(containerWidth / CellSize))
+    return (
+        <div ref={containerRef} style={{minHeight: "100vh"}}>
+            {mounted && <ReactGridLayout
+                width={containerWidth}
+                gridConfig={{
+                    cols: Math.ceil(containerWidth / CellSize) - 1,
+                    rowHeight: CellSize,
+                    margin: [0, 0]
                 }}
+                dragConfig={{enabled: true}}
             >
-                <widget.content/>
-            </div>
-        ))}
-    </div>)
+                {widgets.map((widget, i) => (
+                    <div key={i} data-grid={{
+                        minW: widget.minSize.width,
+                        minH: widget.minSize.height,
+                        maxW: widget.maxSize.width,
+                        maxH: widget.maxSize.height,
+                        w: 2,
+                        h: 2
+                    }}>
+                        <widget.content/>
+                    </div>
+                ))}
+            </ReactGridLayout>}</div>
+    )
 }

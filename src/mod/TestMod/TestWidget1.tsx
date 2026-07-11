@@ -12,7 +12,7 @@ export const TestWidget1: Widget = {
 function Content(): ReactElement {
     const [color, _] = useState(randomColor())
 
-    return <div style={{border: '0px solid black', background: color,height:"100%"}}>Test Widget 1</div>;
+    return <div style={{border: '0px solid black', background: color}}>Test Widget 1</div>;
 }
 
 function randomColor() {
