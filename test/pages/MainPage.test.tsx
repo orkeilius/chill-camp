@@ -16,13 +16,26 @@ vi.mock("react-grid-layout", () => ({
 
 // Prevent MainTrackService side effects
 vi.mock("../../src/services/mainTrackService", () => ({
-    default: {start: vi.fn(), stop: vi.fn()},
+    default: {start: vi.fn(), stop: vi.fn(), getCurrentPlaylist: vi.fn(), changePlaylist: vi.fn()},
 }));
 
 import App from "../../src/App";
 import {EditWidget} from "../../src/mod/systemWidgetMod/EditWidget";
 import {TestWidget1} from "../../src/mod/TestMod/TestWidget1";
 import {EditModeProvider} from "../../src/context/EditModeContext";
+
+// jsdom + Node 26 may not expose localStorage globally
+if (typeof localStorage === 'undefined') {
+    const store: Record<string, string> = {};
+    (globalThis as any).localStorage = {
+        getItem: (k: string) => store[k] ?? null,
+        setItem: (k: string, v: string) => { store[k] = v },
+        removeItem: (k: string) => { delete store[k] },
+        clear: () => { Object.keys(store).forEach(k => delete store[k]) },
+        get length() { return Object.keys(store).length },
+        key: (i: number) => Object.keys(store)[i] ?? null,
+    };
+}
 
 function render(ui: React.ReactElement) {
     const container = document.createElement("div");
