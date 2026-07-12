@@ -35,6 +35,7 @@ export default defineConfig(async () => ({
 
         coverage: {
             reporter : [
+                'text',
                 'lcov',
             ],
             include: ['src/**/*.{ts,tsx}'],
