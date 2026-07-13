@@ -3,6 +3,7 @@ import { Widget } from "../../interface/widget";
 import mainTrackService from "../../services/mainTrackService";
 import { Playlist } from "../../interface/Playlist";
 import modService from "../../services/modService";
+import "./PlaylistSelectorWidget.css";
 
 export const PlaylistSeletorWidget: Widget = {
     name: "Playlist slector",
