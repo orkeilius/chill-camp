@@ -24,8 +24,7 @@ vi.mock("../../../src/services/mainTrackService", () => ({
     },
 }));
 
-import { PlaylistSeletorWidget } from "../../../src/mod/Default/PlaylistSelectorWidget";
-import modService from "../../../src/services/modService";
+import { PlaylistSelectorWidget } from "../../../src/mod/Default/PlaylistSelectorWidget";
 import mainTrackService from "../../../src/services/mainTrackService";
 
 function render(ui: React.ReactElement) {
@@ -46,7 +45,7 @@ describe("PlaylistSelectorWidget", () => {
 
     it("should render a select with playlist options", () => {
         const { container, unmount } = render(
-            <PlaylistSeletorWidget.content />,
+            <PlaylistSelectorWidget.content />,
         );
         try {
             const select = container.querySelector("select");
@@ -62,7 +61,7 @@ describe("PlaylistSelectorWidget", () => {
 
     it("should call changePlaylist when a different playlist is selected", () => {
         const { container, unmount } = render(
-            <PlaylistSeletorWidget.content />,
+            <PlaylistSelectorWidget.content />,
         );
         try {
             const select = container.querySelector("select")!;
@@ -83,7 +82,7 @@ describe("PlaylistSelectorWidget", () => {
             .spyOn(console, "error")
             .mockImplementation(() => {});
         const { container, unmount } = render(
-            <PlaylistSeletorWidget.content />,
+            <PlaylistSelectorWidget.content />,
         );
         try {
             const select = container.querySelector("select")!;
@@ -92,7 +91,7 @@ describe("PlaylistSelectorWidget", () => {
                 select.dispatchEvent(new Event("change", { bubbles: true }));
             });
             expect(consoleSpy).toHaveBeenCalledWith(
-                "slected playlist not found",
+                "selected playlist not found",
             );
             expect(mainTrackService.changePlaylist).not.toHaveBeenCalled();
         } finally {

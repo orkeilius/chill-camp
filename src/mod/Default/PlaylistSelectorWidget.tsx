@@ -5,10 +5,10 @@ import { Playlist } from "../../interface/Playlist";
 import modService from "../../services/modService";
 import "./PlaylistSelectorWidget.css";
 
-export const PlaylistSeletorWidget: Widget = {
-    name: "Playlist slector",
+export const PlaylistSelectorWidget: Widget = {
+    name: "Playlist selector",
     minSize: { height: 1, width: 3 },
-    maxSize: { height: 4, width: 2 },
+    maxSize: { height: 2, width: 6 },
     content: Content,
 };
 
@@ -23,10 +23,10 @@ function Content(): ReactElement {
 
     const changePlaylist = (value: string) => {
         const playlist = modService.listOfPlaylists.find(
-            (p) => p.name == value,
+            (p) => p.name === value,
         );
         if (!playlist) {
-            console.error("slected playlist not found");
+            console.error("selected playlist not found");
             return;
         }
         console.log("selectedPlaylist " + playlist.name);
@@ -42,7 +42,7 @@ function Content(): ReactElement {
             >
                 {modService.listOfPlaylists.map((p) => {
                     return (
-                        <option key={p.name} value={[p.name]}>
+                        <option key={p.name} value={p.name}>
                             {p.name}
                         </option>
                     );

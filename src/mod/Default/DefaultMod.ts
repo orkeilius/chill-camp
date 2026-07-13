@@ -1,11 +1,11 @@
 import Mod from "../../interface/Mod";
 import { Widget } from "../../interface/widget";
-import { PlaylistSeletorWidget } from "./PlaylistSelectorWidget";
+import { PlaylistSelectorWidget } from "./PlaylistSelectorWidget";
 
-export default class defaultMod extends Mod {
-  name = "Default";
+export default class DefaultMod extends Mod {
+    name = "Default";
 
-  getWidget(): Widget[] {
-    return [PlaylistSeletorWidget];
-  }
+    getWidget(): Widget[] {
+        return [PlaylistSelectorWidget];
+    }
 }
