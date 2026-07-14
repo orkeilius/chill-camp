@@ -24,39 +24,25 @@ vi.mock("../../src/services/modService", () => ({
 import mainTrackService from "../../src/services/mainTrackService";
 import modService from "../../src/services/modService";
 
+// Helper: reset the internal currentPlaylist to null so next start() reloads.
+// The field is private on the class instance, so we do a full re-import.
+async function freshService() {
+  vi.resetModules();
+  // re-hoisted mocks still apply, re-import yields a new singleton with null state
+  const { default: svc } = await import("../../src/services/mainTrackService");
+  return svc;
+}
+
 describe("MainTrackService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe("launchNextMusic", () => {
-    it("should log error if no current playlist selected", () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      // Ensure it's fresh or manually triggered without start()
-      mainTrackService.launchNextMusic();
-      expect(consoleSpy).toHaveBeenCalledWith('No current playlist selected');
-    });
-
-    it("should play next music from the current playlist", () => {
-      const mockPlaylist = {
-        name: "Test Playlist",
-        getNextMusic: () => new URL("https://example.com/next.mp3")
-      } as any;
-
-      modService.listOfPlaylists = [mockPlaylist];
-      mainTrackService.start(); // This sets the private currentPlaylist
-
-      mainTrackService.launchNextMusic();
-
-      expect(mockTrack.play).toHaveBeenCalledWith("https://example.com/next.mp3");
-    });
   });
 
   describe("start", () => {
     it("should log error if no playlists available", () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       modService.listOfPlaylists = [];
-      
+
       mainTrackService.start();
       expect(consoleSpy).toHaveBeenCalledWith('No playlists available');
     });
@@ -66,13 +52,35 @@ describe("MainTrackService", () => {
         name: "Test Playlist",
         getNextMusic: () => new URL("https://example.com/test.mp3")
       } as any;
-      
+
       modService.listOfPlaylists = [mockPlaylist];
 
       mainTrackService.start();
 
       expect(mockTrack.addEndCallback).toHaveBeenCalled();
       expect(mockTrack.play).toHaveBeenCalledWith("https://example.com/test.mp3");
+    });
+  });
+
+  describe("launchNextMusic", () => {
+    it("should log error if no current playlist selected", async () => {
+      // Use a fresh service so currentPlaylist is guaranteed null
+      const svc = await freshService();
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      svc.launchNextMusic();
+      expect(consoleSpy).toHaveBeenCalledWith('No current playlist selected');
+    });
+
+    it("should play next music from the current playlist", () => {
+      const mockPlaylist = {
+        name: "Test Playlist",
+        getNextMusic: () => new URL("https://example.com/next.mp3")
+      } as any;
+
+      // changePlaylist sets currentPlaylist and calls start() → launchNextMusic()
+      mainTrackService.changePlaylist(mockPlaylist);
+
+      expect(mockTrack.play).toHaveBeenCalledWith("https://example.com/next.mp3");
     });
   });
 
@@ -84,7 +92,7 @@ describe("MainTrackService", () => {
       } as any;
 
       modService.listOfPlaylists = [mockPlaylist];
-      mainTrackService.start(); // sets listenerId
+      mainTrackService.start(); // sets listenerId and currentPlaylist
       vi.clearAllMocks(); // reset call counts from start()
 
       mainTrackService.stop();

@@ -1,3 +1,8 @@
 .react-grid-layout > * {
     overflow: clip;
 }
+
+:root {
+    --theme-primary-button: #ffffff;
+    --theme-primary-border: #e8dcc8;
+}

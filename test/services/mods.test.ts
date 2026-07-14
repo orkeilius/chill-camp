@@ -48,9 +48,10 @@ describe("TestMod", () => {
 
 describe("ModService", () => {
     it("should collect widgets and playlists from all registered mods", () => {
-        expect(modService.listOfMods).toHaveLength(3);
+        expect(modService.listOfMods).toHaveLength(4);
         // NookMod returns a SunnyAcnrPlaylist, TestMod returns a TestPlaylist
         expect(modService.listOfPlaylists).toHaveLength(2);
-        expect(modService.listOfWidgets).toHaveLength(2);
+        // SystemWidgetMod + defaultMod + TestMod
+        expect(modService.listOfWidgets).toHaveLength(3);
     });
 });
