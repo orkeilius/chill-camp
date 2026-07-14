@@ -20,6 +20,7 @@ vi.mock("../../src/services/mainTrackService", () => ({
 }));
 
 import App from "../../src/App";
+import MainPage from "../../src/pages/MainPage";
 import {EditWidget} from "../../src/mod/systemWidgetMod/EditWidget";
 import {TestWidget1} from "../../src/mod/TestMod/TestWidget1";
 import {EditModeProvider} from "../../src/context/EditModeContext";
@@ -133,6 +134,50 @@ describe("TestWidget1", () => {
         const {container, unmount} = render(<TestWidget1.content/>);
         try {
             expect(container.textContent).toContain("Test Widget 1");
+        } finally {
+            unmount();
+        }
+    });
+});
+
+describe("Cover div in edit mode", () => {
+    beforeEach(() => {
+        vi.spyOn(console, "log").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it("should not render .cover when edit mode is off", () => {
+        const {container, unmount} = render(<MainPage />);
+        try {
+            expect(container.querySelectorAll(".cover").length).toBe(0);
+        } finally {
+            unmount();
+        }
+    });
+
+    it("should render .cover on each widget except Edit grid buttom when edit mode is on", () => {
+        const {container, unmount} = render(<MainPage />);
+        try {
+            const btn = container.querySelector("button")!;
+            act(() => { btn.click(); });
+            // 3 widgets total, 1 is "Edit grid buttom" → 2 covers
+            expect(container.querySelectorAll(".cover").length).toBe(2);
+        } finally {
+            unmount();
+        }
+    });
+
+    it("should remove .cover when edit mode is toggled off", () => {
+        const {container, unmount} = render(<MainPage />);
+        try {
+            const btn = container.querySelector("button")!;
+            act(() => { btn.click(); });          // on
+            expect(container.querySelectorAll(".cover").length).toBe(2);
+            act(() => { btn.click(); });          // off
+            expect(container.querySelectorAll(".cover").length).toBe(0);
         } finally {
             unmount();
         }

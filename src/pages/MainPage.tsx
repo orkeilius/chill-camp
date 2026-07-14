@@ -3,8 +3,8 @@ import "../css/MainPage.css";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
-import {ReactGridLayout, useContainerWidth} from "react-grid-layout";
-import {EditModeProvider, useEditMode} from "../context/EditModeContext";
+import { ReactGridLayout, useContainerWidth } from "react-grid-layout";
+import { EditModeProvider, useEditMode } from "../context/EditModeContext";
 import modService from "../services/modService";
 
 const CellSize = 50;
@@ -18,9 +18,15 @@ function loadLayout() {
         if (saved) {
             const parsed = JSON.parse(saved);
             return parsed.map((p: any) => {
-                const w = widgets.find(w => w.name === p.i);
+                const w = widgets.find((w) => w.name === p.i);
                 return w
-                    ? {...p, minW: w.minSize.width, minH: w.minSize.height, maxW: w.maxSize.width, maxH: w.maxSize.height}
+                    ? {
+                          ...p,
+                          minW: w.minSize.width,
+                          minH: w.minSize.height,
+                          maxW: w.maxSize.width,
+                          maxH: w.maxSize.height,
+                      }
                     : p;
             });
         }
@@ -28,10 +34,15 @@ function loadLayout() {
         console.error(e);
     }
     return widgets.map((w, i) => ({
-        i: w.name, x: 0, y: i,
-        w: w.minSize.width, h: w.minSize.height,
-        minW: w.minSize.width, minH: w.minSize.height,
-        maxW: w.maxSize.width, maxH: w.maxSize.height,
+        i: w.name,
+        x: 0,
+        y: i,
+        w: w.minSize.width,
+        h: w.minSize.height,
+        minW: w.minSize.width,
+        minH: w.minSize.height,
+        maxW: w.maxSize.width,
+        maxH: w.maxSize.height,
     }));
 }
 
@@ -66,6 +77,10 @@ function PageContent() {
                 >
                     {widgets.map((widget) => (
                         <div key={widget.name}>
+                            {editMode &&
+                                !(widget.name == "Edit grid buttom") && (
+                                    <div className="cover" />
+                                )}
                             <widget.content />
                         </div>
                     ))}
