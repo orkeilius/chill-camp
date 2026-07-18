@@ -91,19 +91,18 @@ export default function GridContainer() {
     );
 }
 
-function WidgetGridItem({
-    widget,
-    editMode,
-}: {
+type WidgetGridItemProp = {
     widget: (typeof widgets)[0];
     editMode: boolean;
-}) {
-    const isCovered = editMode && !(widget.name == "Edit grid buttom");
+};
+
+function WidgetGridItem(props: Readonly<WidgetGridItemProp>) {
+    const isCovered = props.editMode && props.widget.name != "Edit grid buttom";
 
     return (
         <>
             {isCovered && <div className="cover" />}
-            <widget.content />
+            <props.widget.content />
         </>
     );
 }
