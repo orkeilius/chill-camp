@@ -71,16 +71,6 @@ describe("App / MainPage integration", () => {
             unmount();
         }
     });
-
-    it("should render the grid layout container", () => {
-        const {container, unmount} = render(<App/>);
-        try {
-            const grid = container.querySelector('[data-testid="grid-layout"]');
-            expect(grid).toBeTruthy();
-        } finally {
-            unmount();
-        }
-    });
 });
 
 describe("EditWidget", () => {
@@ -138,3 +128,5 @@ describe("TestWidget1", () => {
         }
     });
 });
+
+

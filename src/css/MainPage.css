@@ -6,3 +6,9 @@
     --theme-primary-button: #ffffff;
     --theme-primary-border: #e8dcc8;
 }
+
+.cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
