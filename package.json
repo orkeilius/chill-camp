@@ -17,7 +17,9 @@
     "@tauri-apps/plugin-opener": "^2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-grid-layout": "^2.2.3"
+    "react-draggable": "^4.7.0",
+    "react-grid-layout": "^2.2.3",
+    "react-resizable": "^4.0.2"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
