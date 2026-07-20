@@ -19,9 +19,61 @@
     display: flex;
     justify-content: space-between;
 }
+.window-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: rotate(0);
+}
 
-
-
+.window-handle-sw {
+    bottom: -5px;
+    left: -5px;
+    cursor: sw-resize;
+}
+.window-handle-se {
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+.window-handle-nw {
+    top: -5px;
+    left: -5px;
+    cursor: nw-resize;
+}
+.window-handle-ne {
+    top: -5px;
+    right: -5px;
+    cursor: ne-resize;
+}
+.window-handle-w,
+.window-handle-e {
+    top: calc(50% + 10px);
+    transform: translateY(-50%);
+    height: calc(100% - 10px);
+    margin-top: -10px;
+    cursor: ew-resize;
+}
+.window-handle-w {
+    left: -5px;
+}
+.window-handle-e {
+    right: -5px;
+}
+.window-handle-n,
+.window-handle-s {
+    left: calc(50% + 10px);
+    transform: translateX(-50%);
+    width: calc(100% - 10px);
+    margin-left: -10px;
+    cursor: ns-resize;
+}
+.window-handle-n {
+    top: -5px;
+}
+.window-handle-s {
+    bottom: -5px;
+}
 
 
 

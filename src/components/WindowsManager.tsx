@@ -60,8 +60,8 @@ function WindowInstance({config,onClose,
                     height={size.height}
                     minConstraints={[minW, minH]}
                     resizeHandles={["se", "sw", "ne", "nw", "e", "w", "n", "s"]}
+                    handle={(handleAxis, ref) => <div ref={ref} className={"window-handle window-handle-"+ handleAxis} /> }
                 >
-
                     <div
                         className="window-card">
                         <div className="window-titlebar">
