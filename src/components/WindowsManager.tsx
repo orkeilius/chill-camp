@@ -51,6 +51,7 @@ function WindowInstance({config,onClose,
             //handle=".win-titlebar"
             position={pos}
             nodeRef={nodeRef}
+            handle=".window-titlebar"
             onDrag={(_, data) => setPos({x: data.x, y: data.y})}
         >
             <div ref={nodeRef}>
@@ -62,8 +63,8 @@ function WindowInstance({config,onClose,
                 >
 
                     <div
-                        className="wm-card">
-                        <div className="win-titlebar wm-titlebar">
+                        className="window-card">
+                        <div className="window-titlebar">
                             <span className="wm-titlebar-text">{config.title}</span>
                             {isClosable && (
                                 <button onClick={onClose} className="wm-close-btn">

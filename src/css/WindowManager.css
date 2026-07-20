@@ -1,7 +1,7 @@
-.wm-layer > * {
+.window-layer > * {
     pointer-events: auto;
 }
-.wm-card {
+.window-card {
     height: 100%;
     flex-direction: column;
     background: var(--window-bg, #f5f0e8);
@@ -11,8 +11,7 @@
     overflow: hidden;
 }
 
-/* ─── titlebar ─── */
-.wm-titlebar {
+.window-titlebar {
     cursor: grab;
     padding: 8px 12px;
     background: var(--window-titlebar, #e8ddd0);
