@@ -8,7 +8,7 @@ type WindowIntanceProps = {
     onClose: () => void;
 }
 
-export function WindowInstance({
+export default function WindowInstance({
                                    config, onClose,
                                }: Readonly<WindowIntanceProps>) {
     const [pos, setPos] = useState(
@@ -56,7 +56,7 @@ export function WindowInstance({
                         <div className="window-titlebar">
                             <span className="wm-titlebar-text">{config.title}</span>
                             {isClosable && (
-                                <button onClick={onClose} className="wm-close-btn">
+                                <button onClick={onClose} className="wm-close-btn" type="button">
                                     ✕
                                 </button>
                             )}

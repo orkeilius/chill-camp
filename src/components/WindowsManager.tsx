@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import {useWindows} from "../context/WindowsContext";
 import "../css/WindowManager.css";
 import MainPage from "../pages/MainPage";
-import {WindowInstance} from "./WindowInstance";
+import WindowInstance from "./WindowInstance";
 
 export default function WindowsManager() {
     const windowsManger = useWindows();
