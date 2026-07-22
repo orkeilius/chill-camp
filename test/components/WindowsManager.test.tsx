@@ -223,111 +223,46 @@ describe("WindowsManager", () => {
             }
         });
 
-        it("does NOT update internal size state on south/east resize (component delegates DOM to react-resizable)", () => {
-            setWindows({win1: {}});
-            const {container, unmount} = render(<WindowsManager/>);
-            try {
-                expect(mockResize.onResize).toBeTruthy();
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "se",
-                        size: {width: 500, height: 350},
-                    });
+        describe.each([
+            // handle  newSize         expectedPos         expectedSize
+            ["se",  {width: 500, height: 400}, {x: 50, y: 50},   {width: 500, height: 400}],
+            ["sw",  {width: 500, height: 400}, {x: -50, y: 50},  {width: 500, height: 400}],
+            ["ne",  {width: 500, height: 400}, {x: 50, y: -50},  {width: 500, height: 400}],
+            ["nw",  {width: 500, height: 400}, {x: -50, y: -50}, {width: 500, height: 400}],
+            ["e",   {width: 500, height: 400}, {x: 50, y: 50},   {width: 500, height: 400}],
+            ["w",   {width: 500, height: 400}, {x: -50, y: 50},  {width: 500, height: 400}],
+            ["n",   {width: 500, height: 400}, {x: 50, y: -50},  {width: 500, height: 400}],
+            ["s",   {width: 500, height: 400}, {x: 50, y: 50},   {width: 500, height: 400}],
+        ] as const)(
+            "handle '%s': position correction + size update",
+            (handle, newSize, expectedPos, expectedSize) => {
+                it(`corrects position to ${JSON.stringify(expectedPos)} and size to ${JSON.stringify(expectedSize)}`, () => {
+                    setWindows({win1: {}});
+                    const {container, unmount} = render(<WindowsManager/>);
+                    try {
+                        expect(mockResize.onResize).toBeTruthy();
+                        act(() => {
+                            mockResize.onResize!({} as any, {
+                                handle,
+                                size: newSize,
+                            });
+                        });
+                        const resizable = container.querySelector(
+                            '[data-testid="resizable"]',
+                        )!;
+                        expect(mockDrag.position).toEqual(expectedPos);
+                        expect(resizable.getAttribute("data-width")).toBe(
+                            String(expectedSize.width),
+                        );
+                        expect(resizable.getAttribute("data-height")).toBe(
+                            String(expectedSize.height),
+                        );
+                    } finally {
+                        unmount();
+                    }
                 });
-                // correctResizePos returns early for handles without n/w,
-                // so internal size state stays at defaults
-                const resizable = container.querySelector(
-                    '[data-testid="resizable"]',
-                )!;
-                expect(resizable.getAttribute("data-width")).toBe("400");
-                expect(resizable.getAttribute("data-height")).toBe("300");
-                expect(mockDrag.position).toEqual({x: 50, y: 50});
-            } finally {
-                unmount();
-            }
-        });
-
-        it("corrects position when resizing via north handle", () => {
-            setWindows({win1: {}});
-            const {unmount} = render(<WindowsManager/>);
-            try {
-                // Starting position 50,50, size 400,300
-                // Resize north: height grows from 300→400, so y should become 50-(400-300) = -50
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "n",
-                        size: {width: 400, height: 400},
-                    });
-                });
-                expect(mockDrag.position).toEqual({x: 50, y: -50});
-            } finally {
-                unmount();
-            }
-        });
-
-        it("corrects position when resizing via west handle", () => {
-            setWindows({win1: {}});
-            const {unmount} = render(<WindowsManager/>);
-            try {
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "w",
-                        size: {width: 600, height: 300},
-                    });
-                });
-                expect(mockDrag.position).toEqual({x: -150, y: 50});
-            } finally {
-                unmount();
-            }
-        });
-
-        it("corrects position when resizing via northwest handle", () => {
-            setWindows({win1: {}});
-            const {unmount} = render(<WindowsManager/>);
-            try {
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "nw",
-                        size: {width: 500, height: 400},
-                    });
-                });
-                expect(mockDrag.position).toEqual({x: -50, y: -50});
-            } finally {
-                unmount();
-            }
-        });
-
-        it("does NOT correct position on east-only resize", () => {
-            setWindows({win1: {}});
-            const {unmount} = render(<WindowsManager/>);
-            try {
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "e",
-                        size: {width: 600, height: 300},
-                    });
-                });
-                expect(mockDrag.position).toEqual({x: 50, y: 50});
-            } finally {
-                unmount();
-            }
-        });
-
-        it("does NOT correct position on south handle resize", () => {
-            setWindows({win1: {}});
-            const {unmount} = render(<WindowsManager/>);
-            try {
-                act(() => {
-                    mockResize.onResize!({} as any, {
-                        handle: "s",
-                        size: {width: 400, height: 500},
-                    });
-                });
-                expect(mockDrag.position).toEqual({x: 50, y: 50});
-            } finally {
-                unmount();
-            }
-        });
+            },
+        );
     });
 
     describe("close button", () => {

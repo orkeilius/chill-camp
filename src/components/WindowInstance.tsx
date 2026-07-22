@@ -8,9 +8,7 @@ type WindowIntanceProps = {
     onClose: () => void;
 }
 
-export default function WindowInstance({
-                                   config, onClose,
-                               }: Readonly<WindowIntanceProps>) {
+export default function WindowInstance({config, onClose,}: Readonly<WindowIntanceProps>) {
     const [pos, setPos] = useState(
         config.defaultPosition ?? {x: 50, y: 50},
     );
@@ -20,15 +18,16 @@ export default function WindowInstance({
     const [size, setSize] = useState(config.defaultSize ?? {width: 400, height: 300});
 
     const correctResizePos = (event: SyntheticEvent, newSize: ResizeCallbackData) => {
-        if (!newSize.handle.includes("n") && !newSize.handle.includes("w")) {
-            return
+        let newX = pos.x
+        let newY = pos.y
+        if (newSize.handle.includes("n")) {
+            newY = pos.y - (newSize.size.height - size.height)
         }
-        setPos(
-            {
-                x: pos.x - (newSize.size.width - size.width),
-                y: pos.y - (newSize.size.height - size.height)
-            }
-        )
+        if (newSize.handle.includes("w")) {
+            newX = pos.x - (newSize.size.width - size.width)
+        }
+
+        setPos({x: newX, y: newY})
         setSize(newSize.size)
     }
 
