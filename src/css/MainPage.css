@@ -5,6 +5,9 @@
 :root {
     --theme-primary-button: #ffffff;
     --theme-primary-border: #e8dcc8;
+    --theme-window-bg: #f5f0e8;
+    --window-border: #d4c9b8;
+    --window-titlebar: #d6abff;
 }
 
 .cover {
