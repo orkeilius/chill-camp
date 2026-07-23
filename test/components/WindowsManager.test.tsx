@@ -298,11 +298,11 @@ describe("WindowsManager", () => {
     });
 
     describe("structure", () => {
-        it("renders .wm-layer > [data-testid=draggable] > [data-testid=resizable] > .window-card", () => {
+        it("renders .window-layer > [data-testid=draggable] > [data-testid=resizable] > .window-card", () => {
             setWindows({win1: {}});
             const {container, unmount} = render(<WindowsManager/>);
             try {
-                const layer = container.querySelector(".wm-layer")!;
+                const layer = container.querySelector(".window-layer")!;
                 expect(layer).toBeTruthy();
 
                 const draggable = layer.querySelector(

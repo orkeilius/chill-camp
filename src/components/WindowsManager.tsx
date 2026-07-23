@@ -5,11 +5,10 @@ import MainPage from "../pages/MainPage";
 import WindowInstance from "./WindowInstance";
 
 export default function WindowsManager() {
-    const windowsManger = useWindows();
-    const windows = windowsManger.value
-    console.log(windowsManger)
+    const windowsState = useWindows();
+    const windows = windowsState.value
     useEffect(() => {
-        windowsManger.create({
+        windowsState.create({
             id: "main",
             title: "chill-camp",
             content: MainPage,
@@ -18,12 +17,12 @@ export default function WindowsManager() {
     }, []);
 
     return (
-        <div className="wm-layer">
+        <div className="window-layer">
             {[...windows].map(([id, config]) => (
                 <WindowInstance
                     key={id}
                     config={config}
-                    onClose={() => windowsManger.delete(id)}
+                    onClose={() => windowsState.delete(id)}
                 />
             ))}
         </div>

@@ -3,12 +3,12 @@ import {ResizableBox, ResizeCallbackData} from "react-resizable";
 import Draggable from "react-draggable";
 import type {WindowConfig} from "../context/WindowsContext";
 
-type WindowIntanceProps = {
+type WindowInstanceProps = {
     config: WindowConfig;
     onClose: () => void;
 }
 
-export default function WindowInstance({config, onClose,}: Readonly<WindowIntanceProps>) {
+export default function WindowInstance({config, onClose,}: Readonly<WindowInstanceProps>) {
     const [pos, setPos] = useState(
         config.defaultPosition ?? {x: 50, y: 50},
     );
