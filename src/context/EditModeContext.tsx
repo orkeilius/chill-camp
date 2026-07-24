@@ -1,4 +1,6 @@
 import {createContext, useContext, useState, ReactNode, useMemo} from "react";
+import {useWindows} from "./WindowsContext";
+import WidgetListPage from "../pages/WidgetListPage";
 
 type EditModeCtx = {
     editMode: boolean
@@ -12,8 +14,21 @@ const Ctx = createContext<EditModeCtx>({
 
 export function EditModeProvider({children}: Readonly<{ children: ReactNode }>) {
     const [editMode, setEditMode] = useState(false)
-    const toggle =() => setEditMode(v => !v)
-    const value = useMemo(() => ({editMode, toggle }),[editMode])
+    const windowsState = useWindows();
+    const toggle = () => setEditMode(v => {
+        if (!v) {
+            windowsState.create({
+                id: "widget-list",
+                title: "add widget",
+                content: WidgetListPage
+            })
+        } else {
+            windowsState.delete("widget-list")
+        }
+        return !v
+    })
+
+    const value = useMemo(() => ({editMode, toggle}), [editMode])
 
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
