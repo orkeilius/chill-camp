@@ -1,11 +1,11 @@
 import {useEffect} from "react";
-import {useWindows} from "../context/WindowsContext";
 import "../css/WindowManager.css";
 import MainPage from "../pages/MainPage";
 import WindowInstance from "./WindowInstance";
+import {useWindowsStore} from "../store/WindowsStore";
 
 export default function WindowsManager() {
-    const windowsState = useWindows();
+    const windowsState = useWindowsStore();
     const windows = windowsState.value
     useEffect(() => {
         windowsState.create({
