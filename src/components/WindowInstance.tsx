@@ -53,14 +53,14 @@ export default function WindowInstance({config, onClose,}: Readonly<WindowInstan
                     <div
                         className="window-card">
                         <div className="window-titlebar">
-                            <span className="wm-titlebar-text">{config.title}</span>
+                            <span className="window-titlebar-text">{config.title}</span>
                             {isClosable && (
-                                <button onClick={onClose} className="wm-close-btn" type="button">
+                                <button onClick={onClose} className="window-close-btn" type="button">
                                     ✕
                                 </button>
                             )}
                         </div>
-                        <div className="wm-content">
+                        <div className="window-content">
                             <config.content/>
                         </div>
                     </div>
