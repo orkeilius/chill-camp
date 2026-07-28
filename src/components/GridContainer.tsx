@@ -4,15 +4,11 @@ import "react-resizable/css/styles.css";
 
 import { ReactGridLayout, useContainerWidth } from "react-grid-layout";
 import modService from "../services/modService";
-import {useWidgetsStore, loadLayout} from "../store/WidgetsStore";
+import {useWidgetsStore} from "../store/WidgetsStore";
 
 const CellSize = 50;
 
 const widgets = modService.listOfWidgets;
-
-useWidgetsStore.setState(s => ({
-    value: {...s.value, layout: loadLayout(widgets)}
-}));
 
 export default function GridContainer() {
     const {
@@ -20,9 +16,7 @@ export default function GridContainer() {
         containerRef,
         mounted,
     } = useContainerWidth();
-    const widgetsState = useWidgetsStore()
-
-
+    const widgetsStore = useWidgetsStore()
 
     return (
         <div ref={containerRef} style={{ minHeight: "100vh" }}>
@@ -34,10 +28,10 @@ export default function GridContainer() {
                         rowHeight: CellSize,
                         margin: [0, 0],
                     }}
-                    dragConfig={{ enabled: widgetsState.value.isEditMode }}
-                    resizeConfig={{ enabled: widgetsState.value.isEditMode }}
-                    layout={widgetsState.value.layout}
-                    onLayoutChange={widgetsState.updateLayout}
+                    dragConfig={{ enabled: widgetsStore.value.isEditMode }}
+                    resizeConfig={{ enabled: widgetsStore.value.isEditMode }}
+                    layout={widgetsStore.value.layout}
+                    onLayoutChange={widgetsStore.updateLayout}
                 >
                     {widgets.map((widget) => (
                         <div key={widget.name}>

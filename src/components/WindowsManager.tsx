@@ -5,10 +5,10 @@ import WindowInstance from "./WindowInstance";
 import {useWindowsStore} from "../store/WindowsStore";
 
 export default function WindowsManager() {
-    const windowsState = useWindowsStore();
-    const windows = windowsState.value
+    const windowsStore = useWindowsStore();
+    const windows = windowsStore.value
     useEffect(() => {
-        windowsState.create({
+        windowsStore.create({
             id: "main",
             title: "chill-camp",
             content: MainPage,
@@ -22,7 +22,7 @@ export default function WindowsManager() {
                 <WindowInstance
                     key={id}
                     config={config}
-                    onClose={() => windowsState.delete(id)}
+                    onClose={() => windowsStore.delete(id)}
                 />
             ))}
         </div>

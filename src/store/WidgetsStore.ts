@@ -14,6 +14,8 @@ type WidgetsStore = {
     updateLayout: (newLayout: Layout) => void
 }
 
+const STORAGE_KEY = "grid-layout";
+
 export const useWidgetsStore = create<WidgetsStore>((set) => ({
     value: {
         isEditMode: false,
@@ -27,14 +29,12 @@ export const useWidgetsStore = create<WidgetsStore>((set) => ({
 
     updateLayout: (newLayout) => {
         set((state) => {
-            return {value: {...state.value, layout: newLayout}}
+            return {value: {layout: newLayout}}
         })
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newLayout));
     }
 
 }))
-
-const STORAGE_KEY = "grid-layout";
 
 export function loadLayout(widgets: Widget[]): Layout {
     try {
