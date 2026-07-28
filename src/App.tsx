@@ -8,8 +8,8 @@ function App() {
     useEffect(() => {
         MainTrackService.start()
 
-        useWidgetsStore.setState(s => ({
-            value: {...s.value, layout: loadLayout(modService.listOfWidgets)}
+        useWidgetsStore.setState(() => ({
+            layout: loadLayout(modService.listOfWidgets)
         }));
 
         return () => {
@@ -18,9 +18,8 @@ function App() {
     }, []);
 
 
-
     return (
-            <WindowsManager/>
+        <WindowsManager/>
     );
 }
 

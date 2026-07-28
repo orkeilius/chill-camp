@@ -9,27 +9,24 @@ type WidgetsState = {
 }
 
 type WidgetsStore = {
-    value: Readonly<WidgetsState>
     toggleEditMode: (newMode?: boolean) => void
     updateLayout: (newLayout: Layout) => void
 }
 
 const STORAGE_KEY = "grid-layout";
 
-export const useWidgetsStore = create<WidgetsStore>((set) => ({
-    value: {
-        isEditMode: false,
-        layout: [],
-    },
-    toggleEditMode: (newMode?) =>
+export const useWidgetsStore = create<WidgetsState & WidgetsStore>((set) => ({
+    isEditMode: false,
+    layout: [],
+    toggleEditMode: (newMode?) => (
         set((state) => {
-            const next = newMode ?? !state.value.isEditMode
-            return {value: {...state.value, isEditMode: next}}
-        }),
+            const next = newMode ?? !state.isEditMode
+            return {isEditMode: next}
+        })),
 
     updateLayout: (newLayout) => {
-        set((state) => {
-            return {value: {layout: newLayout}}
+        set(() => {
+            return {layout: newLayout}
         })
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newLayout));
     }

@@ -49,9 +49,10 @@ import modService from "../../src/services/modService";
 
 // reload layout from current localStorage — used to init/reset store
 function initLayout() {
-    useWidgetsStore.setState(s => ({
-        value: { ...s.value, layout: loadLayout(modService.listOfWidgets), isEditMode: false }
-    }));
+    useWidgetsStore.setState({
+        layout: loadLayout(modService.listOfWidgets),
+        isEditMode: false,
+    });
 }
 
 function render(ui: React.ReactElement) {
@@ -87,7 +88,7 @@ describe("GridContainer", () => {
 
     describe("cover div in edit mode", () => {
         beforeEach(() => {
-            useWidgetsStore.setState(s => ({ value: { ...s.value, isEditMode: false } }));
+            useWidgetsStore.setState({ isEditMode: false });
         });
 
         it("should not render .cover when edit mode is off", () => {

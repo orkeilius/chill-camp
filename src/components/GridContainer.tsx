@@ -28,12 +28,12 @@ export default function GridContainer() {
                         rowHeight: CellSize,
                         margin: [0, 0],
                     }}
-                    dragConfig={{ enabled: widgetsStore.value.isEditMode }}
-                    resizeConfig={{ enabled: widgetsStore.value.isEditMode }}
-                    layout={widgetsStore.value.layout}
+                    dragConfig={{ enabled: widgetsStore.isEditMode }}
+                    resizeConfig={{ enabled: widgetsStore.isEditMode }}
+                    layout={widgetsStore.layout}
                     onLayoutChange={widgetsStore.updateLayout}
                 >
-                    {widgets.map((widget) => (
+                    {widgets.map(widget => (
                         <div key={widget.name}>
                             <WidgetGridItem
                                 key={widget.name}
@@ -52,8 +52,8 @@ type WidgetGridItemProp = {
 };
 
 function WidgetGridItem(props: Readonly<WidgetGridItemProp>) {
-    const widgetState = useWidgetsStore()
-    const isCovered = widgetState.value.isEditMode && props.widget.name != "Edit grid buttom";
+    const isEditMode = useWidgetsStore(s => s.isEditMode)
+    const isCovered = isEditMode && props.widget.name !== "Edit grid buttom";
 
     return (
         <>

@@ -10,12 +10,13 @@ export const EditWidget: Widget = {
 }
 
 function EditWidgetContent() {
-    const widgetsStore = useWidgetsStore()
+    const isEditMode = useWidgetsStore(s => s.isEditMode)
+    const toggleEditMode = useWidgetsStore(s => s.toggleEditMode)
 
     return <button style={{
         height: "100%",
         width: "100%",
-        background: widgetsStore.value.isEditMode ? "red" : "green",
+        background: isEditMode ? "red" : "green",
         cursor: "pointer"
-    }} onClick={() => {widgetsStore.toggleEditMode()}}/>
+    }} onClick={() => {toggleEditMode()}}/>
 }
