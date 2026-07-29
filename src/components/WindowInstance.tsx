@@ -1,7 +1,7 @@
 import {SyntheticEvent, useRef, useState} from "react";
 import {ResizableBox, ResizeCallbackData} from "react-resizable";
 import Draggable from "react-draggable";
-import type {WindowConfig} from "../context/WindowsContext";
+import {WindowConfig} from "../store/WindowsStore";
 
 type WindowInstanceProps = {
     config: WindowConfig;
@@ -17,7 +17,7 @@ export default function WindowInstance({config, onClose,}: Readonly<WindowInstan
     const minH = config.minSize?.height ?? 80;
     const [size, setSize] = useState(config.defaultSize ?? {width: 400, height: 300});
 
-    const correctResizePos = (event: SyntheticEvent, newSize: ResizeCallbackData) => {
+    const correctResizePos = (_: SyntheticEvent, newSize: ResizeCallbackData) => {
         let newX = pos.x
         let newY = pos.y
         if (newSize.handle.includes("n")) {
@@ -53,14 +53,14 @@ export default function WindowInstance({config, onClose,}: Readonly<WindowInstan
                     <div
                         className="window-card">
                         <div className="window-titlebar">
-                            <span className="wm-titlebar-text">{config.title}</span>
+                            <span className="window-titlebar-text">{config.title}</span>
                             {isClosable && (
-                                <button onClick={onClose} className="wm-close-btn" type="button">
+                                <button onClick={onClose} className="window-close-btn" type="button">
                                     ✕
                                 </button>
                             )}
                         </div>
-                        <div className="wm-content">
+                        <div className="window-content">
                             <config.content/>
                         </div>
                     </div>

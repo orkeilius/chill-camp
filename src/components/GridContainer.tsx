@@ -1,65 +1,22 @@
-import { useState } from "react";
 import "../css/MainPage.css";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 import { ReactGridLayout, useContainerWidth } from "react-grid-layout";
-import { useEditMode } from "../context/EditModeContext";
 import modService from "../services/modService";
+import {useWidgetsStore} from "../store/WidgetsStore";
 
 const CellSize = 50;
-const STORAGE_KEY = "grid-layout";
 
 const widgets = modService.listOfWidgets;
 
-function loadLayout() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) {
-            throw new Error("no saved loadLayout");
-        }
-        const parsed = JSON.parse(saved);
-        return parsed.map((p: any) => {
-            const w = widgets.find((w) => w.name === p.i);
-            return w
-                ? {
-                      ...p,
-                      minW: w.minSize.width,
-                      minH: w.minSize.height,
-                      maxW: w.maxSize.width,
-                      maxH: w.maxSize.height,
-                  }
-                : p;
-        });
-    } catch (e) {
-        console.error(e);
-    }
-    return widgets.map((w, i) => ({
-        i: w.name,
-        x: 0,
-        y: i,
-        w: w.minSize.width,
-        h: w.minSize.height,
-        minW: w.minSize.width,
-        minH: w.minSize.height,
-        maxW: w.maxSize.width,
-        maxH: w.maxSize.height,
-    }));
-}
-
 export default function GridContainer() {
-    const { editMode } = useEditMode();
     const {
         width: containerWidth,
         containerRef,
         mounted,
     } = useContainerWidth();
-    const [layout, setLayout] = useState(loadLayout);
-
-    const handleLayoutChange = (newLayout: any) => {
-        setLayout(newLayout);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newLayout));
-    };
+    const widgetsStore = useWidgetsStore()
 
     return (
         <div ref={containerRef} style={{ minHeight: "100vh" }}>
@@ -71,17 +28,16 @@ export default function GridContainer() {
                         rowHeight: CellSize,
                         margin: [0, 0],
                     }}
-                    dragConfig={{ enabled: editMode }}
-                    resizeConfig={{ enabled: editMode }}
-                    layout={layout}
-                    onLayoutChange={handleLayoutChange}
+                    dragConfig={{ enabled: widgetsStore.isEditMode }}
+                    resizeConfig={{ enabled: widgetsStore.isEditMode }}
+                    layout={widgetsStore.layout}
+                    onLayoutChange={widgetsStore.updateLayout}
                 >
-                    {widgets.map((widget) => (
+                    {widgets.map(widget => (
                         <div key={widget.name}>
                             <WidgetGridItem
                                 key={widget.name}
                                 widget={widget}
-                                editMode={editMode}
                             />
                         </div>
                     ))}
@@ -93,11 +49,11 @@ export default function GridContainer() {
 
 type WidgetGridItemProp = {
     widget: (typeof widgets)[0];
-    editMode: boolean;
 };
 
 function WidgetGridItem(props: Readonly<WidgetGridItemProp>) {
-    const isCovered = props.editMode && props.widget.name != "Edit grid buttom";
+    const isEditMode = useWidgetsStore(s => s.isEditMode)
+    const isCovered = isEditMode && props.widget.name !== "Edit grid buttom";
 
     return (
         <>
