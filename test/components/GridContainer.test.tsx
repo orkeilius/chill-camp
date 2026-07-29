@@ -161,20 +161,19 @@ describe("GridContainer", () => {
                 { i: "Playlist selector", x: 0, y: 1, w: 4, h: 2 },
                 { i: "Test Widget 1", x: 0, y: 0, w: 2, h: 2 },
             ];
-            localStorage.setItem("grid-layout", JSON.stringify(saved));
-            initLayout();
+            // Store in persist-middleware format: { state: { ... }, version: 0 }
+            localStorage.setItem("grid-layout", JSON.stringify({
+                state: { isEditMode: false, layout: saved },
+                version: 0,
+            }));
+            // Simulate rehydration: read persist format and apply to store
+            const persistData = JSON.parse(localStorage.getItem("grid-layout")!);
+            useWidgetsStore.setState({ layout: persistData.state.layout, isEditMode: persistData.state.isEditMode });
 
             const { unmount } = render(<GridContainer />);
             try {
-                const expected = saved.map((p: any) => {
-                    const w = [
-                        { name: "Edit grid buttom", minSize: { width: 1, height: 1 }, maxSize: { width: 1, height: 1 } },
-                        { name: "Playlist selector", minSize: { width: 3, height: 1 }, maxSize: { width: 6, height: 2 } },
-                        { name: "Test Widget 1", minSize: { width: 1, height: 1 }, maxSize: { width: 10, height: 10 } },
-                    ].find((w) => w.name === p.i);
-                    return w ? { ...p, minW: w.minSize.width, minH: w.minSize.height, maxW: w.maxSize.width, maxH: w.maxSize.height } : p;
-                });
-                expect(mockGridLayout.layout).toEqual(expected);
+                // min/max come from widget definitions, not stored layout
+                expect(mockGridLayout.layout).toEqual(saved);
             } finally {
                 unmount();
             }
@@ -190,7 +189,10 @@ describe("GridContainer", () => {
                 ];
                 act(() => { mockGridLayout.onLayoutChange!(newLayout); });
                 const stored = JSON.parse(localStorage.getItem("grid-layout")!);
-                expect(stored).toEqual(newLayout);
+                expect(stored).toEqual({
+                    state: { isEditMode: false, layout: newLayout },
+                    version: 0,
+                });
             } finally {
                 unmount();
             }

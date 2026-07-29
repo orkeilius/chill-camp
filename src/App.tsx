@@ -5,13 +5,13 @@ import {loadLayout, useWidgetsStore} from "./store/WidgetsStore";
 import modService from "./services/modService";
 
 function App() {
+    const widgetsStore = useWidgetsStore();
     useEffect(() => {
         MainTrackService.start()
 
-        useWidgetsStore.setState(() => ({
-            layout: loadLayout(modService.listOfWidgets)
-        }));
-
+        if (widgetsStore.layout.length === 0) {
+            widgetsStore.updateLayout(loadLayout(modService.listOfWidgets))
+        }
         return () => {
             MainTrackService.stop()
         }
