@@ -22,27 +22,6 @@ vi.mock("react-grid-layout", () => ({
     }),
 }));
 
-// jsdom + Node 26 may not expose localStorage globally
-if (typeof localStorage === "undefined") {
-    const store: Record<string, string> = {};
-    (globalThis as any).localStorage = {
-        getItem: (k: string) => store[k] ?? null,
-        setItem: (k: string, v: string) => {
-            store[k] = v;
-        },
-        removeItem: (k: string) => {
-            delete store[k];
-        },
-        clear: () => {
-            Object.keys(store).forEach((k) => delete store[k]);
-        },
-        get length() {
-            return Object.keys(store).length;
-        },
-        key: (i: number) => Object.keys(store)[i] ?? null,
-    };
-}
-
 import GridContainer from "../../src/components/GridContainer";
 import { useWidgetsStore, loadLayout } from "../../src/store/WidgetsStore";
 import modService from "../../src/services/modService";
