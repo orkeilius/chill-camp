@@ -37,6 +37,7 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
 
         }),{
         name: "grid-layout",
+        partialize: (s) => ({layout: s.layout})
         //storage: new LocalJsonStorage<WidgetsStore>()
     })
 )
