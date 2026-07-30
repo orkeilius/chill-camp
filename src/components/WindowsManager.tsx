@@ -1,14 +1,14 @@
 import {useEffect} from "react";
-import {useWindows} from "../context/WindowsContext";
 import "../css/WindowManager.css";
 import MainPage from "../pages/MainPage";
 import WindowInstance from "./WindowInstance";
+import {useWindowsStore} from "../store/WindowsStore";
 
 export default function WindowsManager() {
-    const windowsState = useWindows();
-    const windows = windowsState.value
+    const windowsStore = useWindowsStore();
+    const windows = windowsStore.value
     useEffect(() => {
-        windowsState.create({
+        windowsStore.create({
             id: "main",
             title: "chill-camp",
             content: MainPage,
@@ -22,7 +22,7 @@ export default function WindowsManager() {
                 <WindowInstance
                     key={id}
                     config={config}
-                    onClose={() => windowsState.delete(id)}
+                    onClose={() => windowsStore.delete(id)}
                 />
             ))}
         </div>

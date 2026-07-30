@@ -34,16 +34,15 @@ vi.mock("react-resizable", () => ({
     },
 }));
 
-// Controlled mock of WindowsContext so we don't fight the useEffect
+// Controlled mock of WindowsStore so we don't fight the useEffect
 const mockWindowsValue = vi.hoisted(() => ({
     value: new Map() as Readonly<Map<string, any>>,
     create: vi.fn(),
     delete: vi.fn(),
 }));
 
-vi.mock("../../src/context/WindowsContext", () => ({
-    useWindows: () => mockWindowsValue,
-    WindowsProvider: ({children}: any) => <>{children}</>,
+vi.mock("../../src/store/WindowsStore", () => ({
+    useWindowsStore: () => mockWindowsValue,
 }));
 
 // localStorage polyfill for jsdom + Node
@@ -150,7 +149,7 @@ describe("WindowsManager", () => {
         setWindows({myWindow: {title: "My Title"}});
         const {container, unmount} = render(<WindowsManager/>);
         try {
-            expect(container.querySelector(".wm-titlebar-text")!.textContent).toBe(
+            expect(container.querySelector(".window-titlebar-text")!.textContent).toBe(
                 "My Title",
             );
         } finally {
@@ -270,7 +269,7 @@ describe("WindowsManager", () => {
             setWindows({win1: {}});
             const {container, unmount} = render(<WindowsManager/>);
             try {
-                expect(container.querySelector(".wm-close-btn")).toBeTruthy();
+                expect(container.querySelector(".window-close-btn")).toBeTruthy();
             } finally {
                 unmount();
             }
@@ -280,7 +279,7 @@ describe("WindowsManager", () => {
             setWindows({win1: {isClosable: false}});
             const {container, unmount} = render(<WindowsManager/>);
             try {
-                expect(container.querySelector(".wm-close-btn")).toBeFalsy();
+                expect(container.querySelector(".window-close-btn")).toBeFalsy();
             } finally {
                 unmount();
             }
@@ -290,7 +289,7 @@ describe("WindowsManager", () => {
             setWindows({win1: {isClosable: true}});
             const {container, unmount} = render(<WindowsManager/>);
             try {
-                expect(container.querySelector(".wm-close-btn")).toBeTruthy();
+                expect(container.querySelector(".window-close-btn")).toBeTruthy();
             } finally {
                 unmount();
             }
@@ -321,7 +320,7 @@ describe("WindowsManager", () => {
                 const titlebar = card.querySelector(".window-titlebar")!;
                 expect(titlebar).toBeTruthy();
 
-                const content = card.querySelector(".wm-content")!;
+                const content = card.querySelector(".window-content")!;
                 expect(content).toBeTruthy();
                 expect(
                     content.querySelector('[data-testid="test-content"]'),

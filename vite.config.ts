@@ -32,6 +32,7 @@ export default defineConfig(async () => ({
     test: {
         environment: "jsdom",
         globals: true,
+        setupFiles: ["vitest-localstorage-mock"],
 
         coverage: {
             reporter : [

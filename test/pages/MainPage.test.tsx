@@ -22,20 +22,6 @@ vi.mock("../../src/services/mainTrackService", () => ({
 import App from "../../src/App";
 import {EditWidget} from "../../src/mod/systemWidgetMod/EditWidget";
 import {TestWidget1} from "../../src/mod/TestMod/TestWidget1";
-import {EditModeProvider} from "../../src/context/EditModeContext";
-
-// jsdom + Node 26 may not expose localStorage globally
-if (typeof localStorage === 'undefined') {
-    const store: Record<string, string> = {};
-    (globalThis as any).localStorage = {
-        getItem: (k: string) => store[k] ?? null,
-        setItem: (k: string, v: string) => { store[k] = v },
-        removeItem: (k: string) => { delete store[k] },
-        clear: () => { Object.keys(store).forEach(k => delete store[k]) },
-        get length() { return Object.keys(store).length },
-        key: (i: number) => Object.keys(store)[i] ?? null,
-    };
-}
 
 function render(ui: React.ReactElement) {
     const container = document.createElement("div");
@@ -75,9 +61,7 @@ describe("App / MainPage integration", () => {
 
 describe("EditWidget", () => {
     it("should render a button with green background (editMode off)", () => {
-        const {container, unmount} = render(
-            <EditModeProvider><EditWidget.content/></EditModeProvider>,
-        );
+        const {container, unmount} = render(<EditWidget.content/>);
         try {
             const btn = container.querySelector("button");
             expect(btn).toBeTruthy();
@@ -89,15 +73,11 @@ describe("EditWidget", () => {
     });
 
     it("should toggle to red background on click", () => {
-        const {container, unmount} = render(
-            <EditModeProvider><EditWidget.content/></EditModeProvider>,
-        );
+        const {container, unmount} = render(<EditWidget.content/>);
         try {
             const btn = container.querySelector("button")!;
             expect(btn.style.background).toBe("green");
-            act(() => {
-                btn.click();
-            });
+            act(() => { btn.click(); });
             expect(btn.style.background).toBe("red");
         } finally {
             unmount();
