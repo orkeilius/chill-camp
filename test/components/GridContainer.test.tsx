@@ -23,7 +23,8 @@ vi.mock("react-grid-layout", () => ({
 }));
 
 import GridContainer from "../../src/components/GridContainer";
-import { useWidgetsStore } from "../../src/store/WidgetsStore";
+import { useWidgetsStore, loadLayout } from "../../src/store/WidgetsStore";
+import modService from "../../src/services/modService";
 
 function render(ui: React.ReactElement) {
     const container = document.createElement("div");
@@ -58,7 +59,11 @@ describe("GridContainer", () => {
 
     describe("cover div in edit mode", () => {
         beforeEach(() => {
-            useWidgetsStore.setState({ isEditMode: false });
+            // mirror App's bootstrap: seed the grid from the registered mod widgets
+            useWidgetsStore.setState({
+                layout: loadLayout(modService.listOfWidgets),
+                isEditMode: false,
+            });
         });
 
         it("should not render .cover when edit mode is off", () => {

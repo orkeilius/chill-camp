@@ -56,8 +56,12 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
     })
 )
 
-export function loadLayout(widgets: Widget[]): Layout {
-    return widgets.map((w, i) => ({
+export function loadLayout(widgets: Map<string,Widget>): Layout {
+    return Array.from(widgets.values()).map((w, i) => layoutFromWidget(w, i));
+}
+
+function layoutFromWidget(w: Widget, i: number) {
+    return ({
         i: w.name,
         x: 0,
         y: i,
@@ -67,5 +71,5 @@ export function loadLayout(widgets: Widget[]): Layout {
         minH: w.minSize.height,
         maxW: w.maxSize.width,
         maxH: w.maxSize.height,
-    }));
+    });
 }
