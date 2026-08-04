@@ -36,7 +36,7 @@ export default function GridContainer() {
                         <div key={widget.i}>
                             <WidgetGridItem
                                 key={widget.i}
-                                widget={modService.listOfWidgets.get(widget.i) as Widget}
+                                widget={modService.listOfWidgets.get(widget.widget) as Widget}
                             />
                         </div>
                     ))}

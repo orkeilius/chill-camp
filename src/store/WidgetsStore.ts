@@ -1,21 +1,24 @@
-import {Layout} from "react-grid-layout";
 import {create} from "zustand";
 import {Widget} from "../interface/widget";
 import {persist} from "zustand/middleware";
 import {useWindowsStore} from "./WindowsStore";
 import WidgetListPage from "../pages/WidgetListPage";
+import {Layout, LayoutItem} from "react-grid-layout";
+import {v7 as uuid} from "uuid"
 
+type ExtendedLayoutItem = LayoutItem & {
+    widget: string
+}
 
 type WidgetsState = {
     isEditMode: boolean;
-    layout: Layout;
+    layout: Readonly<ExtendedLayoutItem[]>;
 }
 
 type WidgetsStore = {
     toggleEditMode: (newMode?: boolean) => void
     updateLayout: (newLayout: Layout) => void
 }
-
 
 export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
     persist((set) => ({
@@ -43,10 +46,12 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
 
         updateLayout:
             (newLayout) => {
-                set(() => {
-                    return {layout: newLayout}
+                set((state) => {
+                    const fixedLayout = mergeLayouts(state.layout, newLayout)
+                    console.table(fixedLayout)
+                    return {layout: fixedLayout}
                 })
-            }
+            },
 
 
     }), {
@@ -56,15 +61,16 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
     })
 )
 
-export function loadLayout(widgets: Map<string,Widget>): Layout {
-    return Array.from(widgets.values()).map((w, i) => layoutFromWidget(w, i));
+export function loadLayout(widgets: Map<string, Widget>): Layout {
+    return Array.from(widgets.values()).map((w) => layoutFromWidget(w));
 }
 
-function layoutFromWidget(w: Widget, i: number) {
+function layoutFromWidget(w: Widget): ExtendedLayoutItem {
     return ({
-        i: w.name,
+        widget: w.name,
+        i: uuid(),
         x: 0,
-        y: i,
+        y: 0,
         w: w.minSize.width,
         h: w.minSize.height,
         minW: w.minSize.width,
@@ -72,4 +78,11 @@ function layoutFromWidget(w: Widget, i: number) {
         maxW: w.maxSize.width,
         maxH: w.maxSize.height,
     });
+}
+
+function mergeLayouts(layout: Readonly<ExtendedLayoutItem[]>, newLayout: Layout): ExtendedLayoutItem[] {
+    return newLayout.map((item) => {
+        const existing = layout.find(l => l.i === item.i)
+        return existing ? {...existing, ...item} : item as ExtendedLayoutItem
+    })
 }
