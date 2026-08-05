@@ -18,6 +18,8 @@ type WidgetsState = {
 type WidgetsStore = {
     toggleEditMode: (newMode?: boolean) => void
     updateLayout: (newLayout: Layout) => void
+    addWidget: (widget: Widget) => void
+    removeWidget: (widgetName: string) => void
 }
 
 export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
@@ -53,6 +55,12 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
                 })
             },
 
+        addWidget: (widget) => {
+            set((state) => {
+                const item = layoutFromWidget(widget)
+                return {layout: state.layout.filter(l => l.i !== widget.name).concat(item)}
+            })
+        },
 
     }), {
         name: "grid-layout",
