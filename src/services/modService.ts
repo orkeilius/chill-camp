@@ -32,7 +32,7 @@ class ModService {
 let modInstance: ModService | null = null;
 export default new Proxy({} as ModService, {
     get(_target, prop) {
-        if (!modInstance) modInstance = new ModService();
+        modInstance ??= new ModService();
         return modInstance[prop as keyof ModService];
     },
 });

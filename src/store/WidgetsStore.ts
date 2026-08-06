@@ -49,18 +49,18 @@ export const useWidgetsStore = create<WidgetsState & WidgetsStore>()(
         updateLayout:
             (newLayout) => {
                 set((state) => {
-                    const fixedLayout = mergeLayouts(state.layout, newLayout)
-                    console.table(fixedLayout)
-                    return {layout: fixedLayout}
+                    return {layout: mergeLayouts(state.layout, newLayout)}
                 })
             },
 
         addWidget: (widget) => {
             set((state) => {
-                const item = layoutFromWidget(widget)
-                return {layout: state.layout.filter(l => l.i !== widget.name).concat(item)}
+                return {layout: [...state.layout, layoutFromWidget(widget)]}
             })
         },
+        removeWidget: (widgetName) => {
+            set((state) => ({layout: state.layout.filter(l => l.i !== widgetName)}))
+        }
 
     }), {
         name: "grid-layout",
