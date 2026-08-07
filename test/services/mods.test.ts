@@ -48,7 +48,9 @@ describe("TestMod", () => {
 
 describe("ModService", () => {
     it("should collect widgets and playlists from all registered mods", () => {
-        expect(modService.listOfMods).toHaveLength(4);
+        expect(Object.keys(modService.mods)).toHaveLength(4);
+        expect(modService.mods["NookMod"]).toBeDefined();
+        expect(modService.mods["System widget"]).toBeDefined();
         // NookMod returns a SunnyAcnrPlaylist, TestMod returns a TestPlaylist
         expect(modService.listOfPlaylists).toHaveLength(2);
         // SystemWidgetMod + defaultMod + TestMod

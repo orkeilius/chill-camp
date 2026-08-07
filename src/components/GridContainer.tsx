@@ -5,10 +5,9 @@ import "react-resizable/css/styles.css";
 import { ReactGridLayout, useContainerWidth } from "react-grid-layout";
 import modService from "../services/modService";
 import {useWidgetsStore} from "../store/WidgetsStore";
+import {Widget} from "../interface/widget";
 
 const CellSize = 50;
-
-const widgets = modService.listOfWidgets;
 
 export default function GridContainer() {
     const {
@@ -33,11 +32,11 @@ export default function GridContainer() {
                     layout={widgetsStore.layout}
                     onLayoutChange={widgetsStore.updateLayout}
                 >
-                    {widgets.map(widget => (
-                        <div key={widget.name}>
+                    {widgetsStore.layout.map(widget => (
+                        <div key={widget.i}>
                             <WidgetGridItem
-                                key={widget.name}
-                                widget={widget}
+                                key={widget.i}
+                                widget={modService.listOfWidgets.get(widget.widget) as Widget}
                             />
                         </div>
                     ))}
@@ -48,7 +47,7 @@ export default function GridContainer() {
 }
 
 type WidgetGridItemProp = {
-    widget: (typeof widgets)[0];
+    widget: Widget;
 };
 
 function WidgetGridItem(props: Readonly<WidgetGridItemProp>) {
